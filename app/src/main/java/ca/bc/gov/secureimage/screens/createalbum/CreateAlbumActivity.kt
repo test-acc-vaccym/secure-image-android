@@ -11,7 +11,6 @@ import android.view.View
 import android.widget.Toast
 import ca.bc.gov.mobileauthentication.MobileAuthenticationClient
 import ca.bc.gov.mobileauthentication.data.models.Token
-import ca.bc.gov.secureimage.BuildConfig
 import ca.bc.gov.secureimage.di.Injection
 import ca.bc.gov.secureimage.screens.securecamera.SecureCameraActivity
 import ca.bc.gov.secureimage.R
@@ -25,6 +24,23 @@ import ca.bc.gov.secureimage.screens.allimages.AllImagesActivity
 import ca.bc.gov.secureimage.screens.imagedetail.ImageDetailActivity
 import kotlinx.android.synthetic.main.activity_create_album.*
 
+/**
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Created by Aidan Laing on 2017-12-12.
+ *
+ */
 class CreateAlbumActivity : AppCompatActivity(), CreateAlbumContract.View,
         AddImagesViewHolder.Listener, ImageViewHolder.ImageClickListener,
         DeleteAlbumDialog.DeleteListener, DeleteImageDialog.DeleteListener, MobileNetworkWarningDialog.UploadListener {
@@ -69,21 +85,13 @@ class CreateAlbumActivity : AppCompatActivity(), CreateAlbumContract.View,
         val networkManager = Injection.provideNetworkManager(
                 getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
 
-        val baseUrl = BuildConfig.SSO_BASE_URL
-        val realmName = BuildConfig.SSO_REALM_NAME
-        val authEndpoint = BuildConfig.SSO_AUTH_ENDPOINT
-        val redirectUri = BuildConfig.SSO_REDIRECT_URI
-        val clientId = BuildConfig.SSO_CLIENT_ID
-
-        val mobileAuthenticationClient =
-                MobileAuthenticationClient(
-                        this, baseUrl, realmName, authEndpoint, redirectUri, clientId)
+        val mobileAuthenticationClient = Injection.provideMobileAuthenticationClient(this)
 
         CreateAlbumPresenter(
                 this,
                 albumKey,
                 Injection.provideAlbumsRepo(),
-                Injection.provideCameraImagesRepo(appApi),
+                Injection.provideCameraImagesRepo(appApi, mobileAuthenticationClient),
                 networkManager,
                 appApi,
                 mobileAuthenticationClient)

@@ -3,21 +3,38 @@ package ca.bc.gov.secureimage.screens.createalbum
 import ca.bc.gov.mobileauthentication.MobileAuthenticationClient
 import ca.bc.gov.mobileauthentication.common.exceptions.RefreshExpiredException
 import ca.bc.gov.mobileauthentication.common.exceptions.TokenNotFoundException
+import ca.bc.gov.mobileauthentication.data.models.Token
 import ca.bc.gov.secureimage.common.managers.NetworkManager
+import ca.bc.gov.secureimage.common.utils.TimeUtils
 import ca.bc.gov.secureimage.data.AppApi
 import ca.bc.gov.secureimage.data.models.AddImages
+import ca.bc.gov.secureimage.data.models.local.Album
 import ca.bc.gov.secureimage.data.models.local.CameraImage
 import ca.bc.gov.secureimage.data.repos.albums.AlbumsRepo
 import ca.bc.gov.secureimage.data.repos.cameraimages.CameraImagesRepo
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
-import java.net.URLEncoder
 import java.util.concurrent.TimeUnit
 
 /**
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
  * Created by Aidan Laing on 2017-12-12.
  *
  */
@@ -427,24 +444,7 @@ class CreateAlbumPresenter(
                 },
                 onSuccess = { albumSize ->
                     view.showUploadingDialog(albumSize)
-                    getAlbumNameForUpload()
-                }
-        ).addTo(disposables)
-    }
-
-    /**
-     * Gets album name that will be used for
-     */
-    fun getAlbumNameForUpload() {
-        albumsRepo.getAlbum(albumKey)
-                .firstOrError()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribeBy(
-                onError = {
-                    view.showError(it.message ?: "Error retrieving album")
-                },
-                onSuccess = { album ->
-                    createRemoteAlbumId(album.name)
+                    createRemoteAlbumId()
                 }
         ).addTo(disposables)
     }
@@ -452,9 +452,12 @@ class CreateAlbumPresenter(
     /**
      * Gets a remote album id that can be used to upload images to and build a download url
      */
-    fun createRemoteAlbumId(albumName: String) {
+    fun createRemoteAlbumId() {
         mobileAuthenticationClient.getTokenAsObservable()
-                .flatMap { appApi.createRemoteAlbumId() }
+                .flatMap { token ->
+                    val authToken = "${token.bearer} ${token.accessToken}"
+                    appApi.createRemoteAlbumId(authToken)
+                }
                 .map { it.remoteAlbumId }
                 .firstOrError()
                 .subscribeOn(Schedulers.io())
@@ -464,7 +467,7 @@ class CreateAlbumPresenter(
                     view.hideUploadingDialog()
                 },
                 onSuccess = { remoteAlbumId ->
-                    uploadImagesToRemoteAlbum(remoteAlbumId, albumName)
+                    uploadImagesToRemoteAlbum(remoteAlbumId)
                 }
         ).addTo(disposables)
     }
@@ -474,7 +477,7 @@ class CreateAlbumPresenter(
      * Updates uploaded count in uploading dialog after each upload has finished
      * Builds download url once all images have been uploaded
      */
-    fun uploadImagesToRemoteAlbum(remoteAlbumId: String, albumName: String) {
+    fun uploadImagesToRemoteAlbum(remoteAlbumId: String) {
         cameraImagesRepo.getAllCameraImagesInAlbum(albumKey)
                 .flatMapIterable { it }
                 .flatMap { cameraImagesRepo.uploadCameraImage(remoteAlbumId, it) }
@@ -488,25 +491,53 @@ class CreateAlbumPresenter(
                     view.incrementUploadedCount()
                 },
                 onComplete = {
-                    buildDownloadUrl(remoteAlbumId, albumName)
+                    addNotes(remoteAlbumId)
                 }
         ).addTo(disposables)
+    }
+
+    /**
+     * Adds album name and comments to the remote album so they can be added to a .txt file inside
+     * the downloaded zip
+     */
+    fun addNotes(remoteAlbumId: String) {
+        mobileAuthenticationClient.getTokenAsObservable().zipWith(albumsRepo.getAlbum(albumKey),
+                BiFunction { token: Token, album: Album ->
+                    val name = album.name
+                    val comments = album.comments
+
+                    if (name.isNotBlank() || comments.isNotBlank()) {
+                        val authToken = "${token.bearer} ${token.accessToken}"
+                        appApi.addNotes(authToken, remoteAlbumId, name, comments)
+                    } else {
+                        Observable.empty()
+                    }
+                })
+                .flatMap { it }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribeBy(
+                        onError = {
+                            view.showError(it.message ?: "Error retrieving album")
+                        },
+                        onNext = {
+
+                        },
+                        onComplete = {
+                            buildDownloadUrl(remoteAlbumId)
+                        }
+                ).addTo(disposables)
     }
 
     /**
      * Gets a download url which will download a zip file of all the uploaded image associated with
      * that remote album id.
      */
-    fun buildDownloadUrl(remoteAlbumId: String, albumName: String) {
-        val buildObservable = if (albumName.isBlank()) {
-            appApi.buildDownloadUrl(remoteAlbumId)
-        } else {
-            var fileName = albumName.toLowerCase().replace(" ", "_")
-            fileName = URLEncoder.encode(fileName, "utf-8")
-            appApi.buildDownloadUrl(remoteAlbumId, fileName)
-        }
-
-        buildObservable
+    fun buildDownloadUrl(remoteAlbumId: String) {
+        mobileAuthenticationClient.getTokenAsObservable()
+                .flatMap {token ->
+                    val authToken = "${token.bearer} ${token.accessToken}"
+                    appApi.buildDownloadUrl(authToken, remoteAlbumId)
+                }
                 .map { it.downloadUrl }
                 .firstOrError()
                 .subscribeOn(Schedulers.io())
@@ -516,24 +547,7 @@ class CreateAlbumPresenter(
                     view.hideUploadingDialog()
                 },
                 onSuccess = { downloadUrl ->
-                    getFieldsForEmailChooser(downloadUrl)
-                }
-        ).addTo(disposables)
-    }
-
-    /**
-     * Gets all the current fields so they can be sent with the body
-     */
-    fun getFieldsForEmailChooser(downloadUrl: String) {
-        albumsRepo.getAlbum(albumKey)
-                .firstOrError()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribeBy(
-                onError = {
-                    view.showError(it.message ?: "Error retrieving album")
-                },
-                onSuccess = { album ->
-                    buildEmailChooser(album.name, album.comments, downloadUrl)
+                    buildEmailChooser(downloadUrl)
                 }
         ).addTo(disposables)
     }
@@ -541,18 +555,12 @@ class CreateAlbumPresenter(
     /**
      * Builds an email chooser with name, comments, and download url
      */
-    fun buildEmailChooser(albumName: String, comments: String, downloadUrl: String) {
-        val subject = if (albumName.isBlank()) "Secure Image Album"
-        else "Secure Image Album: $albumName"
-
-        var body = ""
-        if (albumName.isNotBlank()) body += "Album Name:\n$albumName\n\n"
-        if (comments.isNotBlank()) body += "Comments:\n$comments\n\n"
-        if (downloadUrl.isNotBlank()) body += "Download Images Here:\n$downloadUrl"
-
+    fun buildEmailChooser(downloadUrl: String) {
+        val subject = "Album from SecureImage App - Created ${TimeUtils.getCurrentDateString()}"
+        val body = "Download Images Here:\n$downloadUrl"
         val chooserTitle = "Send download link using..."
 
-        view.showEmailChooser(subject, body, chooserTitle)
         view.hideUploadingDialog()
+        view.showEmailChooser(subject, body, chooserTitle)
     }
 }

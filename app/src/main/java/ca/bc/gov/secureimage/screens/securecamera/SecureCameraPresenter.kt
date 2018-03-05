@@ -17,7 +17,20 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 
 /**
- * Created by Aidan Laing on 2017-12-13.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Created by Aidan Laing on 2017-12-12.
  *
  */
 class SecureCameraPresenter(
@@ -39,9 +52,9 @@ class SecureCameraPresenter(
     override fun subscribe() {
         view.hideShutter()
 
-        view.setCameraMethod(CameraKit.Constants.METHOD_STILL)
-        view.setCameraFlash(CameraKit.Constants.FLASH_OFF)
-        view.showFlashOff()
+        view.setCameraMethod(CameraKit.Constants.METHOD_STANDARD)
+        view.setCameraFlash(CameraKit.Constants.FLASH_AUTO)
+        view.showFlashAuto()
         view.setUpFlashControlListener()
 
         view.setCameraCropOutput(false)
@@ -55,6 +68,8 @@ class SecureCameraPresenter(
         view.setCapturing(false)
 
         view.setUpBackListener()
+
+        getLocationAndCache()
     }
 
     override fun dispose() {
@@ -62,7 +77,6 @@ class SecureCameraPresenter(
     }
 
     override fun viewShown() {
-        getLocationAndCache()
         getAlbumImageCountForCounter()
 
         view.setCapturing(false)

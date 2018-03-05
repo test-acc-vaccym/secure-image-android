@@ -1,6 +1,9 @@
 package ca.bc.gov.secureimage.di
 
+import android.content.Context
 import android.net.ConnectivityManager
+import ca.bc.gov.mobileauthentication.MobileAuthenticationClient
+import ca.bc.gov.secureimage.BuildConfig
 import ca.bc.gov.secureimage.common.managers.CompressionManager
 import ca.bc.gov.secureimage.common.managers.KeyStorageManager
 import ca.bc.gov.secureimage.common.managers.NetworkManager
@@ -25,7 +28,20 @@ import java.security.KeyStore
 import java.util.concurrent.TimeUnit
 
 /**
- * Created by Aidan Laing on 2017-12-14.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Created by Aidan Laing on 2017-12-12.
  *
  */
 object Injection {
@@ -34,11 +50,12 @@ object Injection {
     fun provideAlbumsRepo(): AlbumsRepo = AlbumsRepo.getInstance(AlbumsLocalDataSource)
 
     @JvmStatic
-    fun provideCameraImagesRepo(appApi: AppApi): CameraImagesRepo =
+    fun provideCameraImagesRepo(
+            appApi: AppApi,
+            mobileAuthenticationClient: MobileAuthenticationClient): CameraImagesRepo =
             CameraImagesRepo.getInstance(
                     CameraImagesLocalDataSource,
-                    CameraImagesRemoteDataSource.getInstance(appApi)
-            )
+                    CameraImagesRemoteDataSource.getInstance(appApi, mobileAuthenticationClient))
 
     @JvmStatic
     fun provideLocationRepo(): LocationRepo = LocationRepo.getInstance(LocationRemoteDataSource)
@@ -114,4 +131,21 @@ object Injection {
     // App Api
     @JvmStatic
     fun provideAppApi(retrofit: Retrofit): AppApi = retrofit.create(AppApi::class.java)
+
+    // Mobile auth client
+    @JvmStatic
+    fun provideMobileAuthenticationClient(context: Context): MobileAuthenticationClient {
+        val baseUrl = BuildConfig.SSO_BASE_URL
+        val realmName = BuildConfig.SSO_REALM_NAME
+        val authEndpoint = BuildConfig.SSO_AUTH_ENDPOINT
+        val redirectUri = BuildConfig.SSO_REDIRECT_URI
+        val clientId = BuildConfig.SSO_CLIENT_ID
+        val hint = "idir"
+
+        val mobileAuthenticationClient =
+                MobileAuthenticationClient(
+                        context, baseUrl, realmName, authEndpoint, redirectUri, clientId, hint)
+
+        return mobileAuthenticationClient
+    }
 }
