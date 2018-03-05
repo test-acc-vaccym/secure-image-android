@@ -1,5 +1,6 @@
 package ca.bc.gov.secureimage.data
 
+import ca.bc.gov.secureimage.data.models.remote.AddNotesResponse
 import ca.bc.gov.secureimage.data.models.remote.CreateRemoteAlbumIdResponse
 import ca.bc.gov.secureimage.data.models.remote.BuildDownloadUrlResponse
 import ca.bc.gov.secureimage.data.models.remote.UploadImageResponse
@@ -41,12 +42,21 @@ interface AppApi {
             @Part imagePart: MultipartBody.Part
     ): Observable<UploadImageResponse>
 
+    // Add notes
+    @POST("/v1/album/{remoteAlbumId}/note")
+    @FormUrlEncoded
+    fun addNotes(
+            @Header("Authorization") authToken: String,
+            @Path("remoteAlbumId") remoteAlbumId: String,
+            @Field("albumName") albumName: String,
+            @Field("fieldNotes") fieldNotes: String
+    ): Observable<AddNotesResponse>
+
     // Download url
     @GET("/v1/album/{remoteAlbumId}/")
     fun buildDownloadUrl(
             @Header("Authorization") authToken: String,
-            @Path("remoteAlbumId") remoteAlbumId: String,
-            @Query("name") name: String? = null
+            @Path("remoteAlbumId") remoteAlbumId: String
     ): Observable<BuildDownloadUrlResponse>
 
 }

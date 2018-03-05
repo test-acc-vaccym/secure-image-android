@@ -40,7 +40,7 @@ class BaseApplication: Application() {
                 Injection.provideKeyStore())
 
         setUpRealm(keyStorageManager)
-        setUpStrictMode()
+        // setUpStrictMode()
         setUpLeakCanary()
     }
 

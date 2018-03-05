@@ -96,7 +96,6 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.okHttpVersion"
 
     implementation "com.github.bumptech.glide:glide:$rootProject.glideVersion"
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     kapt "com.github.bumptech.glide:compiler:$rootProject.glideVersion"
 
     implementation("com.wonderkiln:camerakit:$rootProject.camerakitVersion") {

@@ -76,4 +76,18 @@ object TimeUtils {
         return dateFormat.format(date)
     }
 
+    /*
+     * Gets the current date and turns it into specified date format
+     */
+    fun getCurrentDateString(
+            format: String = "EEE, MMM d",
+            locale: Locale = Locale.getDefault(),
+            timeZone: TimeZone = TimeZone.getDefault()
+    ): String {
+        val calendar = Calendar.getInstance()
+        val dateFormat = SimpleDateFormat(format, locale)
+        dateFormat.timeZone = timeZone
+        return dateFormat.format(calendar.time)
+    }
+
 }

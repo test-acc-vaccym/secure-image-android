@@ -140,10 +140,11 @@ object Injection {
         val authEndpoint = BuildConfig.SSO_AUTH_ENDPOINT
         val redirectUri = BuildConfig.SSO_REDIRECT_URI
         val clientId = BuildConfig.SSO_CLIENT_ID
+        val hint = "idir"
 
         val mobileAuthenticationClient =
                 MobileAuthenticationClient(
-                        context, baseUrl, realmName, authEndpoint, redirectUri, clientId)
+                        context, baseUrl, realmName, authEndpoint, redirectUri, clientId, hint)
 
         return mobileAuthenticationClient
     }
