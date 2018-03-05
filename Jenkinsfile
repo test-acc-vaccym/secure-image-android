@@ -10,7 +10,11 @@ podTemplate(label: 'android-build', name: 'android-build', serviceAccount: 'jenk
     workingDir: '/tmp',
     command: '',
     args: '${computer.jnlpmac} ${computer.name}',
-    alwaysPullImage: true
+    alwaysPullImage: true,
+    envVars: [
+        secretEnvVar(key: 'BDD_DEVICE_FARM_USER', secretName: 'bdd-credentials', secretKey: 'username'),
+        secretEnvVar(key: 'BDD_DEVICE_FARM_PASSWD', secretName: 'bdd-credentials', secretKey: 'password'),
+      ]
   )
 ]) {
   node('android-build') {
