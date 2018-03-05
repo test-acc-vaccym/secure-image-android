@@ -9,3 +9,7 @@
 .externalNativeBuild
 app/fabric.properties
 keystore.properties
+
+# macOS
+._.DS_Store
+__MACOSX
