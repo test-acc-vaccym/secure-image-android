@@ -68,14 +68,14 @@ podTemplate(label: 'android-build', name: 'android-build', serviceAccount: 'jenk
       dir('bdd/geb-mobile') {
         echo "Upload the sample app to cloud server"
         // App hash (bs/md5), could be used to reference in test task. Using the app package name for now.
-        // APP_HASH = sh (
-        //   script: "$UPLOAD_URL",
-        //   returnStdout: true).trim
+        APP_HASH = sh (
+          script: "$UPLOAD_URL",
+          returnStdout: true).trim
 
-        sh "${UPLOAD_URL}"
+        // sh "${UPLOAD_URL}"
 
         // Abort the build if not uploaded successfully:
-        if ($APP_BS.contains("Warning")) {
+        if ($APP_HASH.contains("Warning")) {
             currentBuild.result = 'ABORTED'
             error('Error uploading app to account storage')
         }
