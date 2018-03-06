@@ -70,7 +70,9 @@ podTemplate(label: 'android-build', name: 'android-build', serviceAccount: 'jenk
         // App hash (bs/md5), could be used to reference in test task. Using the app package name for now.
         APP_HASH = sh (
           script: "$UPLOAD_URL",
-          returnStdout: true).trim
+          returnStdout: true).trim()
+
+        echo "the has is: ${APP_HASH}"
 
         // sh "${UPLOAD_URL}"
 
