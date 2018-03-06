@@ -20,6 +20,12 @@ podTemplate(label: 'android-build', name: 'android-build', serviceAccount: 'jenk
 ]) {
   node('android-build') {
 
+    // Env variables:
+    def APP_PATH = "demo_apps/WikipediaSample.apk"
+    def APP_NAME = "SampleAPP.apk"
+    def UPLOAD_URL = "curl -u ${BDD_DEVICE_FARM_USER}:${BDD_DEVICE_FARM_PASSWD} -X POST https://api.browserstack.com/app-automate/upload -F file=@$APP_PATH"
+
+
     stage('Checkout') {
       echo "Checking out source"
       checkout scm
@@ -51,7 +57,39 @@ podTemplate(label: 'android-build', name: 'android-build', serviceAccount: 'jenk
         export JAVA_HOME && \
         export ANDROID_HOME=/opt/android && \
         ./gradlew build -x test
+        echo 'starting the assemble build:'
+        ./gradlew assembleDebug
       """
+      // Keep the generated apk
+      echo "kept the generated apk....."
+      sh "ls -a app/build/outputs/apk/debug/"
+      
+      echo "Upload the sample app to cloud server"
+      sh "cd functionalTesting/geb-mobile"
+      // App hash (bs/md5), could be used to reference in test task. Using the app package name for now.
+      // APP_HASH = sh (
+      //   script: "$UPLOAD_URL",
+      //   returnStdout: true).trim
+
+      sh "${UPLOAD_URL}"
+
+      // Abort the build if not uploaded successfully:
+      if ($APP_BS.contains("Warning")) {
+          currentBuild.result = 'ABORTED'
+          error('Error uploading app to account storage')
+      }
+      echo "Successfully uploaded the app..."
+      echo "Start functional testing with mobile-BDDStack, running sample test case"
+      // dir('functionalTesting') {
+        try {
+          sh './gradlew --debug --stacktrace androidOnBrowserStack'
+        } finally { 
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'geb-mobile-test-spock/build/reports/**/*'
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'geb-mobile-test-spock/build/test-results/**/*'
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'geb-mobile-test-spock/screenshots/*'
+          junit 'geb-mobile-test-spock/build/test-results/**/*.xml'
+        }
+      // }
     }
   }
 }
