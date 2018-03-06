@@ -32,14 +32,14 @@ class ImageDetailAdapter(
         else -> -1
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder? {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             IMAGE -> ImageDetailViewHolder.create(inflater, parent)
-            else -> null
+            else -> ImageDetailViewHolder.create(inflater, parent)
         }
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is ImageDetailViewHolder -> holder.bind(items[position] as CameraImage)
         }
