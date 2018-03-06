@@ -10,12 +10,12 @@ podTemplate(label: 'android-build', name: 'android-build', serviceAccount: 'jenk
     workingDir: '/tmp',
     command: '',
     args: '${computer.jnlpmac} ${computer.name}',
-    alwaysPullImage: true,
-    envVars: [
-        secretEnvVar(key: 'BDD_DEVICE_FARM_USER', secretName: 'bdd-credentials', secretKey: 'username'),
-        secretEnvVar(key: 'BDD_DEVICE_FARM_PASSWD', secretName: 'bdd-credentials', secretKey: 'password'),
-        secretEnvVar(key: 'ANDROID_DECRYPT_KEY', secretName: 'android-decrypt-key', secretKey: 'decryptKey')
-      ]
+    alwaysPullImage: true
+    // envVars: [
+    //     secretEnvVar(key: 'BDD_DEVICE_FARM_USER', secretName: 'bdd-credentials', secretKey: 'username'),
+    //     secretEnvVar(key: 'BDD_DEVICE_FARM_PASSWD', secretName: 'bdd-credentials', secretKey: 'password'),
+    //     secretEnvVar(key: 'ANDROID_DECRYPT_KEY', secretName: 'android-decrypt-key', secretKey: 'decryptKey')
+    //   ]
   )
 ]) {
   node('android-build') {
@@ -23,6 +23,8 @@ podTemplate(label: 'android-build', name: 'android-build', serviceAccount: 'jenk
     // Env variables:
     def APP_PATH = "demo_apps/WikipediaSample.apk"
     def APP_NAME = "SampleAPP.apk"
+    def BDD_DEVICE_FARM_USER = "testingautomatio2"
+    def BDD_DEVICE_FARM_PASSWD = "jBqsm9QpKx36tNSVzyx6"
     def UPLOAD_URL = "curl -u ${BDD_DEVICE_FARM_USER}:${BDD_DEVICE_FARM_PASSWD} -X POST https://api.browserstack.com/app-automate/upload -F file=@$APP_PATH"
 
 
