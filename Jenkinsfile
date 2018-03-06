@@ -56,31 +56,29 @@ podTemplate(label: 'android-build', name: 'android-build', serviceAccount: 'jenk
         JAVA_HOME=\$(realpath "$JAVA_HOME"/../) && \
         export JAVA_HOME && \
         export ANDROID_HOME=/opt/android && \
-        ./gradlew build -x test
-        echo 'starting the assemble build:'
-        ./gradlew assembleDebug
+        // ./gradlew build -x test
+        // echo 'starting the assemble build:'
+        // ./gradlew assembleDebug
       """
       
       // Keep the generated apk
-      echo "kept the generated apk....."
-      sh "ls -a app/build/outputs/apk/debug/"
+      // echo "kept the generated apk....."
+      // sh "ls -a app/build/outputs/apk/debug/"
 
       dir('bdd/geb-mobile') {
         echo "Upload the sample app to cloud server"
         // App hash (bs/md5), could be used to reference in test task. Using the app package name for now.
-        APP_HASH = sh (
-          script: "$UPLOAD_URL",
-          returnStdout: true).trim()
+        // def APP_HASH = sh (
+        //   script: "$UPLOAD_URL",
+        //   returnStdout: true).trim()
 
-        echo "the has is: ${APP_HASH}"
-
-        // sh "${UPLOAD_URL}"
+        // echo "the has is: ${APP_HASH}"
 
         // Abort the build if not uploaded successfully:
-        if (${APP_HASH}.contains("Warning")) {
-            currentBuild.result = 'ABORTED'
-            error('Error uploading app to account storage')
-        }
+        // if ($APP_HASH.contains("Warning")) {
+        //     currentBuild.result = 'ABORTED'
+        //     error('Error uploading app to account storage')
+        // }
         echo "Successfully uploaded the app..."
         echo "Start functional testing with mobile-BDDStack, running sample test case"
         // dir('functionalTesting') {
