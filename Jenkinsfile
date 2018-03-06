@@ -57,13 +57,11 @@ podTemplate(label: 'android-build', name: 'android-build', serviceAccount: 'jenk
         JAVA_HOME=\$(dirname \$( readlink -f \$(which java) )) && \
         JAVA_HOME=\$(realpath "$JAVA_HOME"/../) && \
         export JAVA_HOME && \
-        export ANDROID_HOME=/opt/android
+        export ANDROID_HOME=/opt/android && \
+        ./gradlew build -x test && \
+        echo 'starting the assemble build:'&& \
+        ./gradlew assembleDebug
         """
-        //  && \
-        // ./gradlew build -x test && \
-        // echo 'starting the assemble build:'&& \
-        // ./gradlew assembleDebug
-        // """
 
       // Keep the generated apk
       // echo "kept the generated apk....."
@@ -79,21 +77,21 @@ podTemplate(label: 'android-build', name: 'android-build', serviceAccount: 'jenk
         echo "the has is: ${APP_HASH}"
 
         // Abort the build if not uploaded successfully:
-        if (APP_HASH.contains("bs")) {
+        if (APP_HASH.contains("Warning")) {
             currentBuild.result = 'ABORTED'
             error('Error uploading app to account storage')
         }
         echo "Successfully uploaded the app..."
+        
         echo "Start functional testing with mobile-BDDStack, running sample test case"
-
-        // try {
-        //   sh './gradlew --debug --stacktrace androidOnBrowserStack'
-        // } finally { 
-        //   archiveArtifacts allowEmptyArchive: true, artifacts: 'geb-mobile-test-spock/build/reports/**/*'
-        //   archiveArtifacts allowEmptyArchive: true, artifacts: 'geb-mobile-test-spock/build/test-results/**/*'
-        //   archiveArtifacts allowEmptyArchive: true, artifacts: 'geb-mobile-test-spock/screenshots/*'
-        //   junit 'geb-mobile-test-spock/build/test-results/**/*.xml'
-        // }
+        try {
+          sh './gradlew --debug --stacktrace androidOnBrowserStack'
+        } finally { 
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'geb-mobile-test-spock/build/reports/**/*'
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'geb-mobile-test-spock/build/test-results/**/*'
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'geb-mobile-test-spock/screenshots/*'
+          junit 'geb-mobile-test-spock/build/test-results/**/*.xml'
+        }
       }
     }
   }
