@@ -23,8 +23,6 @@ podTemplate(label: 'android-build', name: 'android-build', serviceAccount: 'jenk
     // Env variables:
     def APP_PATH = "demo_apps/WikipediaSample.apk"
     def APP_NAME = "SampleAPP.apk"
-    def BDD_DEVICE_FARM_USER = "testingautomatio2"
-    def BDD_DEVICE_FARM_PASSWD = "jBqsm9QpKx36tNSVzyx6"
     def UPLOAD_URL = "curl -u ${BDD_DEVICE_FARM_USER}:${BDD_DEVICE_FARM_PASSWD} -X POST https://api.browserstack.com/app-automate/upload -F file=@$APP_PATH"
 
 
