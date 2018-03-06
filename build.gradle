@@ -40,7 +40,7 @@ ext {
     targetSdkVersion = 26
     compileSdkVersion = 26
 
-    supportLibraryVersion = '27.0.2'
+    supportLibraryVersion = '27.1.0'
     constraintLayoutVersion = '1.0.2'
     archComponentsVersion = '1.0.0'
     rxJava2Version = '2.1.7'

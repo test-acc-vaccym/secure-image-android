@@ -33,14 +33,14 @@ class AlbumsAdapter(
         else -> -1
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder? {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             ALBUM -> AlbumViewHolder.create(inflater, parent)
-            else -> null
+            else -> AlbumViewHolder.create(inflater, parent)
         }
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder?, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is AlbumViewHolder -> holder.bind(items[position] as Album, albumClickListener)
         }

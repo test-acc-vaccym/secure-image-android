@@ -49,7 +49,7 @@ interface AppApi {
             @Header("Authorization") authToken: String,
             @Path("remoteAlbumId") remoteAlbumId: String,
             @Field("albumName") albumName: String,
-            @Field("fieldNotes") fieldNotes: String
+            @Field("comment") comment: String
     ): Observable<AddNotesResponse>
 
     // Download url
