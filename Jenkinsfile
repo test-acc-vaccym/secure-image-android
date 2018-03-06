@@ -77,10 +77,10 @@ podTemplate(label: 'android-build', name: 'android-build', serviceAccount: 'jenk
         echo "the has is: ${APP_HASH}"
 
         // Abort the build if not uploaded successfully:
-        if (APP_HASH.contains("Warning")) {
-            currentBuild.result = 'ABORTED'
-            error('Error uploading app to account storage')
-        }
+        // if (APP_HASH.contains("Warning")) {
+        //     currentBuild.result = 'ABORTED'
+        //     error('Error uploading app to account storage')
+        // }
         echo "Successfully uploaded the app..."
         echo "Start functional testing with mobile-BDDStack, running sample test case"
 
