@@ -60,27 +60,28 @@ podTemplate(label: 'android-build', name: 'android-build', serviceAccount: 'jenk
         echo 'starting the assemble build:'
         ./gradlew assembleDebug
       """
+      
       // Keep the generated apk
       echo "kept the generated apk....."
       sh "ls -a app/build/outputs/apk/debug/"
-      
-      echo "Upload the sample app to cloud server"
-      sh "cd functionalTesting/geb-mobile"
-      // App hash (bs/md5), could be used to reference in test task. Using the app package name for now.
-      // APP_HASH = sh (
-      //   script: "$UPLOAD_URL",
-      //   returnStdout: true).trim
 
-      sh "${UPLOAD_URL}"
+      dir('bdd/geb-mobile') {
+        echo "Upload the sample app to cloud server"
+        // App hash (bs/md5), could be used to reference in test task. Using the app package name for now.
+        // APP_HASH = sh (
+        //   script: "$UPLOAD_URL",
+        //   returnStdout: true).trim
 
-      // Abort the build if not uploaded successfully:
-      if ($APP_BS.contains("Warning")) {
-          currentBuild.result = 'ABORTED'
-          error('Error uploading app to account storage')
-      }
-      echo "Successfully uploaded the app..."
-      echo "Start functional testing with mobile-BDDStack, running sample test case"
-      // dir('functionalTesting') {
+        sh "${UPLOAD_URL}"
+
+        // Abort the build if not uploaded successfully:
+        if ($APP_BS.contains("Warning")) {
+            currentBuild.result = 'ABORTED'
+            error('Error uploading app to account storage')
+        }
+        echo "Successfully uploaded the app..."
+        echo "Start functional testing with mobile-BDDStack, running sample test case"
+        // dir('functionalTesting') {
         try {
           sh './gradlew --debug --stacktrace androidOnBrowserStack'
         } finally { 
@@ -89,7 +90,7 @@ podTemplate(label: 'android-build', name: 'android-build', serviceAccount: 'jenk
           archiveArtifacts allowEmptyArchive: true, artifacts: 'geb-mobile-test-spock/screenshots/*'
           junit 'geb-mobile-test-spock/build/test-results/**/*.xml'
         }
-      // }
+      }
     }
   }
 }
