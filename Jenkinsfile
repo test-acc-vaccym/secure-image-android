@@ -56,10 +56,12 @@ podTemplate(label: 'android-build', name: 'android-build', serviceAccount: 'jenk
         JAVA_HOME=\$(realpath "$JAVA_HOME"/../) && \
         export JAVA_HOME && \
         export ANDROID_HOME=/opt/android && \
-        ./gradlew build -x test && \
-        echo 'starting the assemble build:'&& \
-        ./gradlew assembleDebug
+        ./gradlew build --stacktrace -x test
         """
+        //  && \
+        // echo 'starting the assemble build:'&& \
+        // ./gradlew assembleDebug
+        // """
 
       // Keep the generated apk
       // echo "kept the generated apk....."
