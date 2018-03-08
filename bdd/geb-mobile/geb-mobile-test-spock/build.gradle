@@ -78,8 +78,8 @@ task androidOnBrowserStack(type: Test, dependsOn: [compileGroovy]) {
      **/
 
     systemProperties.put "framework", "appium"
-    systemProperties.put "appium_app", "bs://6923b20d35af5655b0d622f1c4770311ea0818f9"
-    systemProperties.put "appium.url", "http://shellytesting2:y8beASRQzjhXbqbXiqTx@hub.browserstack.com/wd/hub"
+    systemProperties.put "appium_app", "bs://a74bb9aae8a866388fec11c21e15f9fb58e36828"
+    systemProperties.put "appium.url", "http://testingautomatio2:jBqsm9QpKx36tNSVzyx6@hub.browserstack.com/wd/hub"
     systemProperties.put "appium_platformName", "Android"
     systemProperties.put "appium_deviceName", "Google Pixel"
     systemProperties.put "appium_platformVersion", "7.1"

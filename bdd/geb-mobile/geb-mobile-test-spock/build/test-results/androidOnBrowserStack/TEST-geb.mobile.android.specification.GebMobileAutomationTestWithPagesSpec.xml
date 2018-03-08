@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="geb.mobile.android.specification.GebMobileAutomationTestWithPagesSpec" tests="1" skipped="0" failures="0" errors="0" timestamp="2018-03-08T18:09:33" hostname="MacBook-Pro-shelly.local" time="52.654">
+  <properties/>
+  <testcase name="open test-app and enter search string " classname="geb.mobile.android.specification.GebMobileAutomationTestWithPagesSpec" time="52.654"/>
+  <system-out><![CDATA[10:09:34.621 [Test worker] INFO  g.m.driver.GebMobileDriverFactory - Create Mobile Driver Instance for Framework appium ... 
+10:09:34.655 [Test worker] INFO  g.m.driver.GebMobileDriverFactory - setting appium property: appium_deviceName , Google Pixel
+10:09:34.660 [Test worker] INFO  g.m.driver.GebMobileDriverFactory - setting appium property: appium_platformName , Android
+10:09:34.661 [Test worker] INFO  g.m.driver.GebMobileDriverFactory - setting appium property: appium_app , bs://a74bb9aae8a866388fec11c21e15f9fb58e36828
+10:09:34.662 [Test worker] INFO  g.m.driver.GebMobileDriverFactory - setting appium property: appium_platformVersion , 7.1
+10:09:34.672 [Test worker] INFO  g.m.driver.GebMobileDriverFactory - Create Appium Android Driver 
+10:10:07.763 [Test worker] INFO  g.m.driver.GebMobileDriverFactory - Driver created: Capabilities {64bit: false, acceptSslCert: false, acceptSslCerts: false, appActivity: org.wikipedia.main.MainActi..., appPackage: org.wikipedia.alpha, appium_port: 38080, automationName: uiautomator2, browserstack.callbackStop: true, browserstack.debug: false, browserstack.deviceLogs: true, browserstack.ie.noFlash: false, browserstack.minOSVersion: 4.1, browserstack.tunnelIdentifier: , browserstack.video: true, browserstack.video.disableWaterMark: false, bundleID: org.wikipedia.alpha, device: google pixel, deviceName: google pixel, javascriptEnabled: true, mobile: {browser: mobile, version: Google Pixel-7.1}, nativeWebScreenshot: true, orig_os: android, os_version: 7.1, platform: ANDROID, platformName: ANDROID, proxy_type: node, realMobile: true, systemPort: 8200, udid: FA75C0300465, version: }
+10:10:08.865 [Test worker] DEBUG g.m.GebMobileInnerNavigatorFactory - trying to figure out correct Navigator for class io.appium.java_client.android.AndroidDriver , null, ANDROID, ANDROID
+10:10:08.937 [Test worker] INFO  g.m.GebMobileInnerNavigatorFactory - Using geb.mobile.android.AndroidUIAutomatorNonEmptyNavigator for class io.appium.java_client.android.AndroidDriver, null, ANDROID, ANDROID
+10:10:09.001 [Test worker] DEBUG g.m.a.AndroidUIAutomatorNonEmptyNavigator - Selector: ~Search Wikipedia
+10:10:11.330 [Test worker] DEBUG g.m.a.AndroidUIAutomatorNonEmptyNavigator - Selector: #search_src_text
+10:10:11.331 [Test worker] INFO  g.m.a.AndroidUIAutomatorNonEmptyNavigator - new UiSelector().resourceId("org.wikipedia.alpha:id/search_src_text")
+10:10:13.724 [Test worker] DEBUG g.m.a.AndroidUIAutomatorNonEmptyNavigator - setInputValue: [[android: uiautomator2] -> -android uiautomator: new UiSelector().resourceId("org.wikipedia.alpha:id/search_src_text")], 
+10:10:15.910 [Test worker] DEBUG g.m.a.AndroidUIAutomatorNonEmptyNavigator - Selector: //android.widget.TextView[@text='HyperCard']
+10:10:18.334 [Test worker] DEBUG g.m.a.AndroidUIAutomatorNonEmptyNavigator - Selector: android.widget.TextView
+10:10:18.335 [Test worker] DEBUG g.m.a.AndroidUIAutomatorNonEmptyNavigator - Using Class Name with: android.widget.TextView
+]]></system-out>
+  <system-err><![CDATA[Mar 08, 2018 10:10:07 AM org.openqa.selenium.remote.ProtocolHandshake createSession
+INFO: Detected dialect: OSS
+]]></system-err>
+</testsuite>
