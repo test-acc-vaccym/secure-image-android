@@ -10,12 +10,12 @@ podTemplate(label: 'android-build', name: 'android-build', serviceAccount: 'jenk
     workingDir: '/tmp',
     command: '',
     args: '${computer.jnlpmac} ${computer.name}',
-    alwaysPullImage: true,
-    envVars: [
-        secretEnvVar(key: 'BDD_DEVICE_FARM_USER', secretName: 'bdd-credentials', secretKey: 'username'),
-        secretEnvVar(key: 'BDD_DEVICE_FARM_PASSWD', secretName: 'bdd-credentials', secretKey: 'password'),
-        secretEnvVar(key: 'ANDROID_DECRYPT_KEY', secretName: 'android-decrypt-key', secretKey: 'decryptKey'),
-      ]
+    alwaysPullImage: true
+    // envVars: [
+    //     secretEnvVar(key: 'BDD_DEVICE_FARM_USER', secretName: 'bdd-credentials', secretKey: 'username'),
+    //     secretEnvVar(key: 'BDD_DEVICE_FARM_PASSWD', secretName: 'bdd-credentials', secretKey: 'password'),
+    //     secretEnvVar(key: 'ANDROID_DECRYPT_KEY', secretName: 'android-decrypt-key', secretKey: 'decryptKey')
+    //   ]
   )
 ]) {
   node('android-build') {
@@ -23,7 +23,7 @@ podTemplate(label: 'android-build', name: 'android-build', serviceAccount: 'jenk
     // Env variables:
     def APP_PATH = "demo_apps/WikipediaSample.apk"
     def APP_NAME = "SampleAPP.apk"
-    def UPLOAD_URL = "curl -u ${BDD_DEVICE_FARM_USER}:${BDD_DEVICE_FARM_PASSWD} -X POST https://api.browserstack.com/app-automate/upload -F file=@$APP_PATH"
+    def UPLOAD_URL = "curl -u ${env.BDD_DEVICE_FARM_USER}:${env.BDD_DEVICE_FARM_PASSWD} -X POST https://api.browserstack.com/app-automate/upload -F file=@$APP_PATH"
 
 
     stage('Checkout') {
@@ -55,11 +55,12 @@ podTemplate(label: 'android-build', name: 'android-build', serviceAccount: 'jenk
         JAVA_HOME=\$(dirname \$( readlink -f \$(which java) )) && \
         JAVA_HOME=\$(realpath "$JAVA_HOME"/../) && \
         export JAVA_HOME && \
-        export ANDROID_HOME=/opt/android
+        export ANDROID_HOME=/opt/android && \
+        ./gradlew build -x test -x lint && \
+        echo 'starting the assemble build:'&& \
+        ./gradlew assembleDebug
         """
-      // ./gradlew build -x test && \
-      //   echo 'starting the assemble build:'&& \
-      // ./gradlew assembleDebug
+
       // Keep the generated apk
       // echo "kept the generated apk....."
       // sh "ls -a app/build/outputs/apk/debug/"
@@ -67,20 +68,20 @@ podTemplate(label: 'android-build', name: 'android-build', serviceAccount: 'jenk
       dir('bdd/geb-mobile') {
         echo "Upload the sample app to cloud server"
         // App hash (bs/md5), could be used to reference in test task. Using the app package name for now.
-        // def APP_HASH = sh (
-        //   script: "$UPLOAD_URL",
-        //   returnStdout: true).trim()
+        def APP_HASH = sh (
+          script: "$UPLOAD_URL",
+          returnStdout: true).trim()
 
-        // echo "the has is: ${APP_HASH}"
+        echo "the has is: ${APP_HASH}"
 
         // Abort the build if not uploaded successfully:
-        // if ($APP_HASH.contains("Warning")) {
-        //     currentBuild.result = 'ABORTED'
-        //     error('Error uploading app to account storage')
-        // }
+        if (APP_HASH.contains("Warning")) {
+            currentBuild.result = 'ABORTED'
+            error('Error uploading app to account storage')
+        }
         echo "Successfully uploaded the app..."
+        
         echo "Start functional testing with mobile-BDDStack, running sample test case"
-        // dir('functionalTesting') {
         try {
           sh './gradlew --debug --stacktrace androidOnBrowserStack'
         } finally { 
