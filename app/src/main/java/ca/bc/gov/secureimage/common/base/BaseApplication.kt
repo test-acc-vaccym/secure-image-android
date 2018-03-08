@@ -40,7 +40,7 @@ class BaseApplication: Application() {
                 Injection.provideKeyStore())
 
         setUpRealm(keyStorageManager)
-        // setUpStrictMode()
+        setUpStrictMode()
         setUpLeakCanary()
     }
 
@@ -72,7 +72,7 @@ class BaseApplication: Application() {
         if (BuildConfig.DEBUG) {
             StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
                     .detectAll()
-                    .penaltyDialog()
+                    .penaltyLog()
                     .build())
         }
     }

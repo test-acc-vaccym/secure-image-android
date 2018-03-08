@@ -3,7 +3,7 @@ buildscript {
     ext.kotlin_version = '1.2.30'
 
     ext.gradleVersion = '3.0.1'
-    ext.kotlinVersion = '1.2.21'
+    ext.kotlinVersion = '1.2.30'
     ext.realmVersion = '4.3.4'
     ext.fabricToolsVersion = '1.21.6'
 
