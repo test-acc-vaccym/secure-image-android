@@ -67,19 +67,19 @@ podTemplate(label: 'android-build', name: 'android-build', serviceAccount: 'jenk
 
       dir('bdd/geb-mobile') {
         echo "Upload the sample app to cloud server"
-        // App hash (bs/md5), could be used to reference in test task. Using the app package name for now.
-        def APP_HASH = sh (
-          script: "$UPLOAD_URL",
-          returnStdout: true).trim()
+        // // App hash (bs/md5), could be used to reference in test task. Using the app package name for now.
+        // def APP_HASH = sh (
+        //   script: "$UPLOAD_URL",
+        //   returnStdout: true).trim()
 
-        echo "the has is: ${APP_HASH}"
+        // echo "the has is: ${APP_HASH}"
 
-        // Abort the build if not uploaded successfully:
-        if (APP_HASH.contains("Warning")) {
-            currentBuild.result = 'ABORTED'
-            error('Error uploading app to account storage')
-        }
-        echo "Successfully uploaded the app..."
+        // // Abort the build if not uploaded successfully:
+        // if (APP_HASH.contains("Warning")) {
+        //     currentBuild.result = 'ABORTED'
+        //     error('Error uploading app to account storage')
+        // }
+        // echo "Successfully uploaded the app..."
         
         echo "Start functional testing with mobile-BDDStack, running sample test case"
         try {
