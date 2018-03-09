@@ -14,6 +14,7 @@ ext.spockVersion = '1.0-groovy-2.3'
 ext.groovyVersion = '2.3.11'
 ext.appiumClientVersion = '5.0.4'
 ext.junitVersion = '4.11'
+ext.slf4jVersion = '1.7.6'
 
 
 allprojects {
@@ -31,14 +32,14 @@ subprojects {
 
     dependencies {
 
-        compile("io.appium:java-client:$appiumClientVersion")
+        compile "io.appium:java-client:$appiumClientVersion"
         compile "org.json:json:20171018"
         compile "org.codehaus.groovy:groovy-all:$groovyVersion"
-        compile "org.slf4j:slf4j-api:1.7.6"
+        compile "org.slf4j:slf4j-api:$slf4jVersion"
         compile 'ch.qos.logback:logback-classic:1.1.2'
         compile "org.seleniumhq.selenium:selenium-java:$seleniumVersion"
-        compile "junit:junit:$junitVersion"
 
+        compile "junit:junit:$junitVersion"
 
         compile("org.gebish:geb-spock:$gebVersion") {
             exclude module: "groovy"
@@ -49,11 +50,8 @@ subprojects {
             exclude module: "groovy"
             exclude module: "groovy-all"
         }
-
         testCompile "junit:junit:$junitVersion"
     }
-
-
 }
 // the appium server for local devices and simulators/emulators:
 def startServer = { server, command ->
