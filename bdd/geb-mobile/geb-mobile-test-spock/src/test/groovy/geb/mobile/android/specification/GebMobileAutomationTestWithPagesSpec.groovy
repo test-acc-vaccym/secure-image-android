@@ -15,6 +15,13 @@ import geb.mobile.GebMobileBaseSpec
 import geb.mobile.android.activities.WikisearchActivity
 
 import spock.lang.Stepwise
+import spock.lang.Ignore
+import spock.lang.Issue
+import spock.lang.Narrative
+import spock.lang.See
+import spock.lang.Specification
+import spock.lang.Title
+import spock.lang.Unroll
 
 
 /**
