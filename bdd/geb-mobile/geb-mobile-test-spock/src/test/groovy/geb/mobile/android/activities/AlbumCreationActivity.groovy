@@ -21,6 +21,12 @@ class AlbumCreationActivity extends AndroidBaseActivity {
 
         uploadButton {$("#ca.bc.gov.secureimage:id/uploadTv")}
 
+        // photos {XXX}
+
+        // nameField {XXX}
+
+        // commentField {XXX}
+
 
     }
 

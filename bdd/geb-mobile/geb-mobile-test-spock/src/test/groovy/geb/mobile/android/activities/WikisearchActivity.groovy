@@ -3,6 +3,9 @@ package geb.mobile.android.activities
 import geb.mobile.android.AndroidBaseActivity
 import groovy.util.logging.Slf4j
 
+// This is a sample:
+
+
 @Slf4j
 class WikisearchActivity extends AndroidBaseActivity {
 

@@ -1,21 +1,21 @@
-package geb.mobile.android.activities
+// package geb.mobile.android.activities
 
-import geb.mobile.android.AndroidBaseActivity
-import groovy.util.logging.Slf4j
+// import geb.mobile.android.AndroidBaseActivity
+// import groovy.util.logging.Slf4j
 
-@Slf4j
-class ViewAllPhotosActivity extends AndroidBaseActivity {
+// @Slf4j
+// class ViewAllPhotosActivity extends AndroidBaseActivity {
 
-    static content = {
+//     static content = {
 
-        selectPhotoButton
-        selectSinglePhotoButtons ---> should be an array
-        mainDeleteButton
-        confirmDeletePhotosButton
+//         selectPhotoButton
+//         selectSinglePhotoButtons ---> should be an array
+//         mainDeleteButton
+//         confirmDeletePhotosButton
 
-        backToDetailsButton
-    }
+//         backToDetailsButton
+//     }
 
 
 
-}
+// }
