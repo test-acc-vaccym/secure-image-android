@@ -85,13 +85,13 @@ podTemplate(label: 'android-build', name: 'android-build', serviceAccount: 'jenk
         try {
           sh './gradlew --debug --stacktrace androidOnBrowserStack'
         } finally { 
-          stash includes: 'geb-mobile-test-spock/build/reports/**/*', name: 'reports'
+          // stash includes: 'geb-mobile-test-spock/build/reports/**/*', name: 'reports'
 
 
-          // archiveArtifacts allowEmptyArchive: true, artifacts: 'geb-mobile-test-spock/build/reports/**/*'
-          // archiveArtifacts allowEmptyArchive: true, artifacts: 'geb-mobile-test-spock/build/test-results/**/*'
-          // archiveArtifacts allowEmptyArchive: true, artifacts: 'geb-mobile-test-spock/screenshots/*'
-          // junit 'geb-mobile-test-spock/build/test-results/**/*.xml'
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'geb-mobile-test-spock/build/reports/**/*'
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'geb-mobile-test-spock/build/test-results/**/*'
+          archiveArtifacts allowEmptyArchive: true, artifacts: 'geb-mobile-test-spock/screenshots/*'
+          junit 'geb-mobile-test-spock/build/test-results/**/*.xml'
         }
       }
     }
