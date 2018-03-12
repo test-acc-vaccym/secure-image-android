@@ -557,7 +557,7 @@ class CreateAlbumPresenter(
      */
     fun buildEmailChooser(downloadUrl: String) {
         val subject = "Album from SecureImage App - Created ${TimeUtils.getCurrentDateString()}"
-        val body = "Download Images Here:\n$downloadUrl"
+        val body = "Download Album:\n$downloadUrl"
         val chooserTitle = "Send download link using..."
 
         view.hideUploadingDialog()
