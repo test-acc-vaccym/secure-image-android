@@ -46,6 +46,7 @@ class SecureCameraActivity : AppCompatActivity(), SecureCameraContract.View, Cam
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
+        setTheme(R.style.AppTheme)
         setContentView(R.layout.activity_secure_camera)
 
         // Extras

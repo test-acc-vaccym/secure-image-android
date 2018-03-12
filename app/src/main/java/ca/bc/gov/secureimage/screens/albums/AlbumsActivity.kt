@@ -43,6 +43,7 @@ class AlbumsActivity : AppCompatActivity(), AlbumsContract.View, AlbumViewHolder
     // Life cycle
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(R.style.AppTheme)
         setContentView(R.layout.activity_albums)
 
         AlbumsPresenter(

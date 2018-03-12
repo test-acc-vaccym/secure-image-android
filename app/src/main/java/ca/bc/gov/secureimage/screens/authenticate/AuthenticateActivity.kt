@@ -36,6 +36,7 @@ class AuthenticateActivity : AppCompatActivity(), AuthenticateContract.View {
     // Life cycle
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(R.style.AppTheme)
         setContentView(R.layout.activity_authenticate)
 
         val keyguardManager: KeyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager

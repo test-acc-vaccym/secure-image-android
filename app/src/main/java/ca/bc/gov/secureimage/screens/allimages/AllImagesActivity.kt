@@ -50,6 +50,7 @@ class AllImagesActivity : AppCompatActivity(), AllImagesContract.View, AddImages
     // Life cycle
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(R.style.AppTheme)
         setContentView(R.layout.activity_all_images)
 
         // Extras

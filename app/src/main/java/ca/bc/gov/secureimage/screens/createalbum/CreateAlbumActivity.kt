@@ -70,6 +70,7 @@ class CreateAlbumActivity : AppCompatActivity(), CreateAlbumContract.View,
     // Life cycle
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(R.style.AppTheme)
         setContentView(R.layout.activity_create_album)
 
         // Extras

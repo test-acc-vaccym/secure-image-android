@@ -49,6 +49,7 @@ class ImageDetailActivity : AppCompatActivity(), ImageDetailContract.View, View.
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
+        setTheme(R.style.AppTheme)
         setContentView(R.layout.activity_image_detail)
 
         // Extras
